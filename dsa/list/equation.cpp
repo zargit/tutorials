@@ -66,22 +66,32 @@ class Equation{
 
 		Equation convertStringToEquation(string str){
 			Equation eq;
-
+		
 			return eq;
 		}
+
+		// Overloading the '+' operator for class Equation
+		Equation operator+(const Equation& a){
+			Equation e, *t;
+			cout<<"wow";
+			return e;
+		}
+
 };
 
 int main(){
-	Equation eq1;
+	Equation eq1,eq2,eq3;
 	
 	//Comment out the following lines to take input from console
 	
 	int c,d;
 	while(cin>>c>>d){
+		eq2.insert(c,d);
 		eq1.insert(c,d);
 	}
 	eq1.display();
-	
+	eq2.display();
+	eq3 = eq1 + eq2;
 	
 	//Uncomment the following lines for console input//
 	

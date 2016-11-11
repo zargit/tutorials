@@ -4,11 +4,11 @@
 
 using namespace std;
 
-string opt[2] = {"+-", "/*"};
+string opt[3] = {"+-", "/*","^"};
 stack<char> st;
 
 int getPrecedence(char ch){
-	for(int i=0;i<2;i++){
+	for(int i=0;i<3;i++){
 		for(int j=0;j<opt[i].length();j++){
 			if(opt[i][j]==ch) return i;
 		}
@@ -16,12 +16,13 @@ int getPrecedence(char ch){
 	return -1;
 }
 
-string makeEmptyUntil(bool bracket=false){
+string makeEmptyUntil(char opt=' '){
 	string str = "";
 	while(!st.empty()){
 		char t = st.top();
+		if(t!='(' && getPrecedence(t)<getPrecedence(opt)) break; // break if the t has lesser predence than opt
 		st.pop();
-		if(bracket && t=='(') break;
+		if(t=='(') break;
 		str += t;
 	}
 	return str;
@@ -42,7 +43,7 @@ string infixToPostfix(string infix){
 				if(infix[i]=='('){
 					st.push(infix[i]);
 				}else{
-					postfix += makeEmptyUntil(true);
+					postfix += makeEmptyUntil();
 				}
 			}
 		}else{
@@ -52,7 +53,7 @@ string infixToPostfix(string infix){
 				int operatorInStack = getPrecedence(st.top());
 				if(p<=operatorInStack){
 					// input operator has lower or equal precedence with operator at top of stack
-					postfix += makeEmptyUntil(true);
+					postfix += makeEmptyUntil(infix[i]);
 					st.push(infix[i]);
 				}else{
 					// input operator has higher precedence than operator at top of stack
