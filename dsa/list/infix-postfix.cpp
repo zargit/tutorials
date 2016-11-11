@@ -16,15 +16,14 @@ int getPrecedence(char ch){
 	return -1;
 }
 
-string makeEmptyUntil(bool bracket=false){
+string makeEmptyUntil(char opt=' '){
 	string str = "";
 	while(!st.empty()){
-		char top = st.top();
+		char t = st.top();
+		if(t!='(' && getPrecedence(t)<getPrecedence(opt)) break; // break if the t has lesser predence than opt
 		st.pop();
-		if(bracket && top=='('){
-			break;
-		}
-		str += top;
+		if(t=='(') break;
+		str += t;
 	}
 	return str;
 }
@@ -42,7 +41,7 @@ string infixToPostfix(string infix){
 				if(infix[i]=='('){
 					st.push(infix[i]);
 				}else{
-					postfix += makeEmptyUntil(true);
+					postfix += makeEmptyUntil();
 				}
 			}
 		}else{
@@ -51,7 +50,7 @@ string infixToPostfix(string infix){
 				if(p>operatorInStack){
 					st.push(infix[i]);
 				}else{
-					postfix += makeEmptyUntil(true);				
+					postfix += makeEmptyUntil(infix[i]);				
 					st.push(infix[i]);
 				}
 			}else{
