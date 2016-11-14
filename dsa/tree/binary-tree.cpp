@@ -49,6 +49,72 @@ class BST{
 			}
 		}
 
+		void deleteNodeHelper(Node<T>* &t, Node<T>* &p){
+			if(t->left==NULL && t->right==NULL){
+				// no children
+				if(p==NULL){
+					root = NULL;
+					delete t;
+					return;
+				}	
+				if(p->left == t) p->left = NULL;
+				else p->right = NULL;
+				delete t;
+
+			}else if(t->left==NULL || t->right==NULL){
+				// one children
+				if(p==NULL){
+					if(t->left!=NULL){
+						root->value = t->left->value;
+						root = t->left;
+					}else {
+						root->value = root->right->value;
+						root = root->right;
+					}
+					delete t;
+					return;
+				}
+				if(p->left == t) {
+					// when t is in the left of its parent
+					if(t->left == NULL) p->left = t->right;
+					else p->left = t->left;
+				}else{
+					//when t is in the right of its parent
+					if(t->left == NULL) p->right = t->right;
+					else p->right = t->left;
+				}
+				delete t;
+			}else{
+				// two children
+				Node<T> *s = t->right, *sp=t; // t->right is the root of the right sub-tree
+				while(s->left != NULL){
+					sp = s;
+					s = s->left;
+				}
+				// at this point we found the smallest node in the right sub-tree
+				t->value = s->value;
+				deleteNodeHelper(s,sp);
+			}
+		}
+
+		void deleteNode(T value){
+			if(root==NULL) return;
+			Node<T> *t = root, *p=NULL;
+			while(t!=NULL){
+				if(value < t->value){
+					p = t;
+					t = t->left;		
+				}else if(value > t->value){
+					p = t;
+					t = t->right;
+				}else{
+					// found our match
+					deleteNodeHelper(t,p);
+					break;
+				}
+			}
+		}
+
 		void displayPrefix(Node<T>* current){
 			if(current!=NULL){
 				cout<<current->value<<" ";
@@ -92,6 +158,10 @@ class BST{
 		}
 
 		void display(int order=0){
+			if(root==NULL){
+				cout<<"Empty"<<endl;
+				return;
+			}
 			if(order==0) displayPrefix(root);
 			else if(order==1) displayInfix(root);
 			else if(order==2) displayPostfix(root);
@@ -102,13 +172,28 @@ class BST{
 
 int main(){
 	BST<int> tree;
-	int z = 7;
-	int nums[] = {10,5,3,7,12,11,15};
+	int z = 6;
+	int nums[] = {10,5,3,7,12,15};
 	
 	for(int i=0;i<z;i++){
 		tree.insert(nums[i]);
 	}
-
-	cout<<tree.has(0)<<endl;
 	
+	tree.display(1);
+	tree.deleteNode(12);	
+	tree.display(1);
+	tree.deleteNode(10);	
+	tree.display(1);
+	tree.deleteNode(15);	
+	tree.display(1);
+	tree.deleteNode(5);	
+	tree.display(1);
+	tree.deleteNode(7);	
+	tree.display(1);
+	tree.deleteNode(3);	
+	tree.display(1);
+	
+	tree.insert(34);
+
+	tree.display(1);
 }	
